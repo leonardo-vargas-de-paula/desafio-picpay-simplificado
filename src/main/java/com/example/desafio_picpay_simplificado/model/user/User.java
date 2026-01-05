@@ -1,7 +1,9 @@
-package com.example.desafio_picpay_simplificado.model;
+package com.example.desafio_picpay_simplificado.model.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity(name= "users")
 @Table(name= "users")
@@ -28,7 +30,7 @@ public class User {
 
     String password;
 
-    private String amount;
+    private BigDecimal balance;
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
