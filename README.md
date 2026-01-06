@@ -1,6 +1,6 @@
 # Desafio pic pay simplificado 💲
 
-Este projeto é o estudo de uma possível soluçção para o desafio backend Picpay Simplicado.
+Este projeto é o estudo de uma possível solução para o desafio backend Picpay Simplicado.
 
 ## Adições futuras ⏳
 - Testes unitários/integração
