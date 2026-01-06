@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -31,7 +32,7 @@ public class TransactionService {
         this.notificationService = notificationService;
     }
 
-    public void createTransaction(TransactionDTO transactionDTO) throws Exception{
+    public Transaction createTransaction(TransactionDTO transactionDTO) throws Exception{
         User sender = this.userService.findUserById(transactionDTO.sender());
         User receiver = this.userService.findUserById(transactionDTO.receiver());
         boolean isAuthorized = this.authorizeTransaction(sender, transactionDTO.value());
@@ -60,20 +61,33 @@ public class TransactionService {
         notificationService.sendNotification(receiver, messageReceiver);
         notificationService.sendNotification(sender, messageSender);
 
+        return transaction;
+
     }
 
     public boolean authorizeTransaction(User sender, BigDecimal value){
+        try {
+            ResponseEntity<Map> authorized = restTemplate.getForEntity("https://util.devi.tools/api/v2/authorize", Map.class);
 
-        ResponseEntity<Map> authorized = restTemplate.getForEntity("https://util.devi.tools/api/v2/authorize", Map.class);
-
-        if(authorized.getStatusCode() == HttpStatus.OK ){
-//            String message = (String) authorized.getBody().get("message");
-//
-//            return "Autorizado".equalsIgnoreCase(message);
-            Map<String, Object> data = (Map<String, Object>) authorized.getBody().get("data");
-            return data != null && Boolean.TRUE.equals(data.get("authorization"));
+            if (authorized.getStatusCode() == HttpStatus.OK) {
+                //            String message = (String) authorized.getBody().get("message");
+                //
+                //            return "Autorizado".equalsIgnoreCase(message);
+                Map<String, Object> data = (Map<String, Object>) authorized.getBody().get("data");
+                return data != null && Boolean.TRUE.equals(data.get("authorization"));
             }
             return false;
 
-    }
+
+        }catch(HttpClientErrorException e){
+
+            return false;
+        }catch (Exception e){
+
+            return false;
+        }
+
+
+        }
 }
+
