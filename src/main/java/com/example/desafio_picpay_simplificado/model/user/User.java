@@ -1,5 +1,6 @@
 package com.example.desafio_picpay_simplificado.model.user;
 
+import com.example.desafio_picpay_simplificado.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,12 +19,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String firstname;
+    private String firstName;
 
-    private String lastname;
+    private String lastName;
 
     @Column(unique = true)
-    private String document;
+    private String  document;
 
     @Column(unique = true)
     private String email;
@@ -33,6 +34,17 @@ public class User {
     private BigDecimal balance;
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    public User(UserDTO userDTO) {
+        this.firstName = userDTO.firstName();
+        this.lastName=userDTO.lastName();
+        this.document = userDTO.document();
+        this.balance = userDTO.balance();
+        this.email = userDTO.email();
+        this.password = userDTO.password();
+        this.userType = userDTO.userType();
+    }
+
 
 }
 
