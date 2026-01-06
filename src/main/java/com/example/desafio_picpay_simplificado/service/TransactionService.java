@@ -22,17 +22,21 @@ public class TransactionService {
     private final UserService userService;
     private final TransactionRepository transactionRepository;
     private final RestTemplate restTemplate;
+    private final NotificationService notificationService;
 
-    public TransactionService(UserService userService, TransactionRepository transactionRepository, RestTemplate restTemplate) {
+    public TransactionService(UserService userService, TransactionRepository transactionRepository, RestTemplate restTemplate, NotificationService notificationService) {
         this.userService = userService;
         this.transactionRepository = transactionRepository;
         this.restTemplate = restTemplate;
+        this.notificationService = notificationService;
     }
 
     public void createTransaction(TransactionDTO transactionDTO) throws Exception{
         User sender = this.userService.findUserById(transactionDTO.sender());
         User receiver = this.userService.findUserById(transactionDTO.receiver());
         boolean isAuthorized = this.authorizeTransaction(sender, transactionDTO.value());
+        String messageReceiver = "Transação recebida.";
+        String messageSender = "Transação efetuada.";
 
         if(!isAuthorized){
             throw new Exception("Transação nao autorizada.");
@@ -52,6 +56,9 @@ public class TransactionService {
         this.transactionRepository.save(transaction);
         this.userService.saveUser(sender);
         this.userService.saveUser(receiver);
+
+        notificationService.sendNotification(receiver, messageReceiver);
+        notificationService.sendNotification(sender, messageSender);
 
     }
 
