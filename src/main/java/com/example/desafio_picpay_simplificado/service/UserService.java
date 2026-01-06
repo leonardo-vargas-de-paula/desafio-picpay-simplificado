@@ -25,7 +25,7 @@ public class UserService {
 
     public void validateTransaction(User sender, BigDecimal amount) throws Exception {
         if(sender.getUserType() == UserType.MERCHANT){
-            throw new Exception("Transação não autorizada.");
+            throw new Exception("Transação não autorizada, usuário lojista.");
         }
 
         if(sender.getBalance().compareTo(amount) < 0){
@@ -37,7 +37,7 @@ public class UserService {
     //evitar que transaction service tenha acesso ao repo de user
     public User findUserById(Long id) throws Exception{
         return this.userRepository.findUserById(id)
-                .orElseThrow(()->new Exception("Usuário não encontrado"));
+                .orElseThrow(()->new Exception("Usuário não encontrado | Id: "+id));
     }
 
     public void saveUser(User user){
