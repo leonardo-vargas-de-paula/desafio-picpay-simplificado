@@ -5,6 +5,7 @@ import com.example.desafio_picpay_simplificado.model.transaction.Transaction;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -27,18 +29,29 @@ public class TransactionService {
         this.restTemplate = restTemplate;
     }
 
-    public void createTransaction(TransactionDTO transaction) throws Exception{
-        User sender = this.userService.findUserById(transaction.sender());
-        User receiver = this.userService.findUserById(transaction.receiver());
-        boolean isAuthorized = this.authorizeTransaction(sender, transaction.value());
-
-        userService.validateTransaction(sender, transaction.value() );
+    public void createTransaction(TransactionDTO transactionDTO) throws Exception{
+        User sender = this.userService.findUserById(transactionDTO.sender());
+        User receiver = this.userService.findUserById(transactionDTO.receiver());
+        boolean isAuthorized = this.authorizeTransaction(sender, transactionDTO.value());
 
         if(!isAuthorized){
             throw new Exception("Transação nao autorizada.");
         }
 
+        userService.validateTransaction(sender, transactionDTO.value() );
 
+        Transaction transaction = new Transaction();
+        transaction.setAmount(transactionDTO.value());
+        transaction.setSender(sender);
+        transaction.setReceiver(receiver);
+        transaction.setTimestamp(LocalDateTime.now());
+
+        sender.setBalance(sender.getBalance().subtract(transactionDTO.value()));
+        receiver.setBalance(receiver.getBalance().add(transactionDTO.value()));
+
+        this.transactionRepository.save(transaction);
+        this.userService.saveUser(sender);
+        this.userService.saveUser(receiver);
 
     }
 
