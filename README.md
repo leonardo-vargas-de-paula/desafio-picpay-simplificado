@@ -7,7 +7,7 @@ Este projeto é o estudo de uma possível solução para o desafio backend Picpa
 ### 🛠️ Desenvolvimento & Arquitetura
 - [x] Adicionar o Swagger
 - [ ] Testes unitários/integração _(em progresso...)_
-- [ ] Criação de uma classe para controle das exceções
+- [x] Criação de uma classe para controle das exceções
 - [ ] Ampliar o escopo do projeto
 
 ### 🔒 Segurança
