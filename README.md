@@ -1,13 +1,22 @@
-# Desafio pic pay simplificado 💲
+# 💲 Desafio pic pay simplificado
 
 Este projeto é o estudo de uma possível solução para o desafio backend Picpay Simplicado.
 
-## Adições futuras ⏳
-- Testes unitários/integração
-- Adicionar o Swagger
-- Autenticação
-- Criação de uma classe para controle das exceções
-- Configuração do CI/CD
-- Deploy na AWS
-- Provisionamento de infraestrutura com Terraform
-- Ampliar o escopo do projeto
+## ⏳ Adições futuras
+
+### 🛠️ Desenvolvimento & Arquitetura
+- [x] Adicionar o Swagger
+- [ ] Testes unitários/integração _(em progresso...)_
+- [ ] Criação de uma classe para controle das exceções
+- [ ] Ampliar o escopo do projeto
+
+### 🔒 Segurança
+- [ ] Autenticação com Spring Security
+
+### 🚀 DevOps & Infraestrutura
+- [ ] Configuração do CI/CD
+- [ ] Deploy na AWS
+- [ ] Provisionamento de infraestrutura com Terraform
+
+
+
