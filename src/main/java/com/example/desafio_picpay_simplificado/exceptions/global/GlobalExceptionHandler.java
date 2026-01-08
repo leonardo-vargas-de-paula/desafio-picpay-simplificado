@@ -68,4 +68,22 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
+    @ExceptionHandler(CPFOuCNPJJaCadastradoException.class)
+    public ResponseEntity<Object> handleCPFOuCNPJJaCadastrado(CPFOuCNPJJaCadastradoException ex){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EmailJaCadastradoException.class)
+    public ResponseEntity<Object> handleEmailJaCadastrado(EmailJaCadastradoException ex){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("message", ex.getMessage());
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
 }
