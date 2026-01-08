@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT new com.example.desafio_picpay_simplificado.dto.UserDTO(u.firstName, u.lastName, u.document, u.balance, u.email, u.password, u.userType) " +
             "FROM users u")
     List<UserDTO> findAllAsDTO();
+
+    Optional<User> findUserByEmail(String email);
 }
