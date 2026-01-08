@@ -14,16 +14,16 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     @Value("${api.security.token.secret}")
-    private static String secret;
+    private  String secret;
     private static final long EXPIRATION_TIME = 86400000;
 
-    private static Key getSigningKey() {
+    private  Key getSigningKey() {
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
 
-    public static String generateToken(String username){
+    public  String generateToken(String username){
         return Jwts.builder()
                 .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -31,12 +31,12 @@ public class JwtUtil {
                 .compact();
     }
 
-    public static String extractUsername(String token){
+    public  String extractUsername(String token){
         return Jwts.parserBuilder().setSigningKey(getSigningKey()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
-    public static boolean validate(String token){
+    public  boolean validate(String token){
         try{
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             return true;
