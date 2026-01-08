@@ -1,15 +1,15 @@
 package com.example.desafio_picpay_simplificado.service;
 
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
-import com.example.desafio_picpay_simplificado.exceptions.OperacaoNaoPermitidaException;
-import com.example.desafio_picpay_simplificado.exceptions.RecursoNaoEncontradoException;
-import com.example.desafio_picpay_simplificado.exceptions.SaldoInsuficienteException;
+import com.example.desafio_picpay_simplificado.exceptions.*;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.model.user.UserType;
 import com.example.desafio_picpay_simplificado.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -17,8 +17,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void validateTransaction(User sender, BigDecimal amount) throws Exception {
@@ -44,6 +47,18 @@ public class UserService {
 
     public User createUser(UserDTO userDTO){
         User user = new User(userDTO);
+
+        if(userRepository.findUserByEmail(userDTO.email()).isPresent()) {
+            throw new EmailJaCadastradoException("Este e-mail já está cadastrado.");
+        }
+
+        if(userRepository.findUserByDocument(userDTO.document()).isPresent()) {
+            throw new CPFOuCNPJJaCadastradoException("Este CPF/CNPJ já está cadastrado.");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+
         this.saveUser(user);
         return user;
 
@@ -85,4 +100,11 @@ public class UserService {
         userRepository.delete(user);
     }
 
+
+    public UserDTO findUserByEmail(String email) {
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
+
+        return UserDTO.fromEntity(user);
+    }
 }
