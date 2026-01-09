@@ -71,4 +71,37 @@ public class UserControllerTests {
 
     }
 
+    @Test
+    public void mustDeleteUserById() throws Exception {
+        User user1 = new User( 1L,"firstName", "lastName", "11111", "teste1@example.com", "senha1", BigDecimal.valueOf(10.1), UserType.COMMON);
+
+        Mockito.doNothing().when(userService).deleteUser(1L);
+
+        mockMvc.perform(delete("/api/user/{id}", user1.getId()))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void mustUpdateUser() throws Exception {
+        User user1 = new User( 1L,"firstName", "lastName", "11111", "teste1@example.com", "senha1", BigDecimal.valueOf(10.1), UserType.COMMON);
+        UserDTO dados = new UserDTO("firstName2", "lastName2", "11111", BigDecimal.valueOf(109830.1),"teste1@example.com", "senha1", UserType.COMMON);
+
+        Mockito.when(userService.updateUser(1L, dados)).thenReturn(dados);
+
+        mockMvc.perform(put("/api/user/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dados))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName").value("firstName2"))
+                .andExpect(jsonPath("$.lastName").value("lastName2"))
+                .andExpect(jsonPath("$.email").value("teste1@example.com"))
+                .andExpect(jsonPath("$.document").value("11111"))
+                .andExpect(jsonPath("$.balance").value("109830.1"))
+                .andExpect(jsonPath("$.password").value("senha1"))
+                .andExpect(jsonPath("$.userType").value("COMMON"));
+
+
+    }
+
 }
