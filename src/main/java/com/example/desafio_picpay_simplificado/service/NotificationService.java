@@ -1,6 +1,5 @@
 package com.example.desafio_picpay_simplificado.service;
 
-import com.example.desafio_picpay_simplificado.config.RestTemplateConfig;
 import com.example.desafio_picpay_simplificado.dto.NotificationDTO;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import org.springframework.http.HttpStatus;
