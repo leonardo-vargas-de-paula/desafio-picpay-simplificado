@@ -1,6 +1,7 @@
 package com.example.desafio_picpay_simplificado.service;
 
 import com.example.desafio_picpay_simplificado.dto.TransactionDTO;
+import com.example.desafio_picpay_simplificado.exceptions.TransacaoNaoAutorizadaException;
 import com.example.desafio_picpay_simplificado.model.transaction.Transaction;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.repository.TransactionRepository;
@@ -40,7 +41,7 @@ public class TransactionService {
         String messageSender = "Transação efetuada.";
 
         if(!isAuthorized){
-            throw new Exception("Transação nao autorizada.");
+            throw new TransacaoNaoAutorizadaException("Transação nao autorizada.");
         }
 
         userService.validateTransaction(sender, transactionDTO.value() );

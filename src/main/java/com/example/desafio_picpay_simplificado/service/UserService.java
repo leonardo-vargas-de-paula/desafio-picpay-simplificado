@@ -1,18 +1,16 @@
 package com.example.desafio_picpay_simplificado.service;
 
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
+import com.example.desafio_picpay_simplificado.exceptions.OperacaoNaoPermitidaException;
+import com.example.desafio_picpay_simplificado.exceptions.RecursoNaoEncontradoException;
+import com.example.desafio_picpay_simplificado.exceptions.SaldoInsuficienteException;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.model.user.UserType;
 import com.example.desafio_picpay_simplificado.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class UserService {
@@ -25,11 +23,11 @@ public class UserService {
 
     public void validateTransaction(User sender, BigDecimal amount) throws Exception {
         if(sender.getUserType() == UserType.MERCHANT){
-            throw new Exception("Transação não autorizada, usuário lojista.");
+            throw new OperacaoNaoPermitidaException("Transação não autorizada, usuário lojista.");
         }
 
         if(sender.getBalance().compareTo(amount) < 0){
-            throw new Exception("Saldo insuficiente.");
+            throw new SaldoInsuficienteException("Saldo insuficiente.");
         }
 
     }
@@ -37,7 +35,7 @@ public class UserService {
     //evitar que transaction service tenha acesso ao repo de user
     public User findUserById(Long id) throws Exception{
         return this.userRepository.findUserById(id)
-                .orElseThrow(()->new Exception("Usuário não encontrado | Id: "+id));
+                .orElseThrow(()->new RecursoNaoEncontradoException("Usuário não encontrado | Id: "+id));
     }
 
     public void saveUser(User user){
@@ -53,7 +51,7 @@ public class UserService {
 
     public UserDTO updateUser(Long id, UserDTO userDTO){
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
         user.setFirstName(userDTO.firstName());
         user.setLastName(userDTO.lastName());
         user.setBalance(userDTO.balance());
@@ -73,7 +71,7 @@ public class UserService {
 
     public UserDTO getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
 
         return UserDTO.fromEntity(user);
     }
@@ -81,7 +79,8 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
+                .orElseThrow(() -> new RecursoNaoEncontradoException
+                        ("Usuário não encontrado."));
 
         userRepository.delete(user);
     }
