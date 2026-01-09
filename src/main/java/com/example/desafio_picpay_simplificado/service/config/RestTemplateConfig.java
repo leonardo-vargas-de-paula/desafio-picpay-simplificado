@@ -1,4 +1,4 @@
-package com.example.desafio_picpay_simplificado.config;
+package com.example.desafio_picpay_simplificado.service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
