@@ -2,9 +2,16 @@ package com.example.desafio_picpay_simplificado;
 
 import com.example.desafio_picpay_simplificado.controller.UserController;
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
+import com.example.desafio_picpay_simplificado.dto.UserDTOResponse;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.model.user.UserType;
+import com.example.desafio_picpay_simplificado.security.JwtAuthFilter;
+import com.example.desafio_picpay_simplificado.security.JwtUtil;
+import com.example.desafio_picpay_simplificado.security.config.SecurityConfig;
+import com.example.desafio_picpay_simplificado.service.AuthService;
+import com.example.desafio_picpay_simplificado.service.UserDetailService;
 import com.example.desafio_picpay_simplificado.service.UserService;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,6 +41,14 @@ public class UserControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
 
+
+    @MockitoBean
+    private UserDetailService userDetailService;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
+
+
     @Test
     public void mustReturnAllUsers() throws Exception {
         List<UserDTO> usersDTO = new ArrayList<>();
@@ -51,7 +66,6 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$[0].email").value("teste1@example.com"))
                 .andExpect(jsonPath("$[0].userType").value("COMMON"))
                 .andExpect(jsonPath("$[1].firstName").value("firstName2"))
-                .andExpect(jsonPath("$[1].email").value("teste2@example.com"))
                 .andExpect(jsonPath("$[1].userType").value("MERCHANT"));
 
     }

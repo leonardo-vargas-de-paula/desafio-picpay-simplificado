@@ -1,6 +1,7 @@
 package com.example.desafio_picpay_simplificado.controller;
 
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
+import com.example.desafio_picpay_simplificado.dto.UserDTOResponse;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.security.JwtUtil;
 import com.example.desafio_picpay_simplificado.service.AuthService;
@@ -30,10 +31,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO){
-        User user = userService.createUser(userDTO);
+    public ResponseEntity<UserDTOResponse> register(@RequestBody UserDTO userDTO) throws Exception{
+        UserDTOResponse userDTOResponse = userService.createUser(userDTO);
+        return new ResponseEntity<>(userDTOResponse, HttpStatus.CREATED);
 
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
 
