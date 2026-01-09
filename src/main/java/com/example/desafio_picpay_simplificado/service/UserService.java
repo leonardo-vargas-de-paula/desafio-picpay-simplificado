@@ -1,6 +1,7 @@
 package com.example.desafio_picpay_simplificado.service;
 
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
+import com.example.desafio_picpay_simplificado.dto.UserDTOResponse;
 import com.example.desafio_picpay_simplificado.exceptions.*;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.model.user.UserType;
@@ -41,27 +42,36 @@ public class UserService {
                 .orElseThrow(()->new RecursoNaoEncontradoException("Usuário não encontrado | Id: "+id));
     }
 
-    public void saveUser(User user){
-        userRepository.save(user);
+    public User saveUser(User user){
+        userRepository.saveUser(user);
+        return user;
     }
 
-    public User createUser(UserDTO userDTO){
+    public UserDTOResponse createUser(UserDTO userDTO) throws Exception{
         User user = new User(userDTO);
 
-        if(userRepository.findUserByEmail(userDTO.email()).isPresent()) {
-            throw new EmailJaCadastradoException("Este e-mail já está cadastrado.");
-        }
-
-        if(userRepository.findUserByDocument(userDTO.document()).isPresent()) {
-            throw new CPFOuCNPJJaCadastradoException("Este CPF/CNPJ já está cadastrado.");
-        }
+        validateEmail(userDTO);
+        validateDocument(userDTO);
 
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
 
-        this.saveUser(user);
-        return user;
+        User savedUser = this.saveUser(user);
 
+        return UserDTOResponse.fromEntity(savedUser);
+
+    }
+
+    public void validateEmail(UserDTO userDTO) throws Exception{
+        if(userRepository.findUserByEmail(userDTO.email()).isPresent()) {
+            throw new EmailJaCadastradoException("Este e-mail já está cadastrado.");
+        }
+    }
+
+    public void validateDocument(UserDTO userDTO) throws Exception{
+        if(userRepository.findUserByDocument(userDTO.document()).isPresent()) {
+            throw new CPFOuCNPJJaCadastradoException("Este CPF/CNPJ já está cadastrado.");
+        }
     }
 
     public UserDTO updateUser(Long id, UserDTO userDTO){
