@@ -12,6 +12,7 @@ import com.example.desafio_picpay_simplificado.security.config.SecurityConfig;
 import com.example.desafio_picpay_simplificado.service.AuthService;
 import com.example.desafio_picpay_simplificado.service.UserDetailService;
 import com.example.desafio_picpay_simplificado.service.UserService;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.junit.jupiter.api.Test;
@@ -138,6 +139,21 @@ public class UserControllerTests {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("Deve retornar 404 ao tentar atualizar um usuário inexistente")
+    public void mustShouldReturnNotFoundWhenUpdatingNonExistentUser() throws Exception{
+        Long idInexistente = 99L;
+        UserDTO dados = new UserDTO("firstName2", "lastName2", "11111", BigDecimal.valueOf(109830.1),"teste1@example.com", "senha1", UserType.COMMON);
+        Mockito.when(userService.updateUser(idInexistente, dados)).thenThrow(new RecursoNaoEncontradoException("Usuário não encontrado | Id: "+idInexistente));
+
+        mockMvc.perform(put("/api/user/{id}", idInexistente)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dados))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
 
 
 }
