@@ -128,5 +128,16 @@ public class UserControllerTests {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void mustReturnNotFoundWhenUserDoesNotExist() throws Exception {
+        Long idInexistente = 99L;
+        Mockito.when(userService.getUserById(idInexistente))
+                .thenThrow(new RecursoNaoEncontradoException("Usuário não encontrado | Id: "+idInexistente));
+
+        mockMvc.perform(get("/api/user/{id}", idInexistente)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
 
 }
