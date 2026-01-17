@@ -3,6 +3,7 @@ package com.example.desafio_picpay_simplificado;
 import com.example.desafio_picpay_simplificado.controller.UserController;
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
 import com.example.desafio_picpay_simplificado.dto.UserDTOResponse;
+import com.example.desafio_picpay_simplificado.exceptions.RecursoNaoEncontradoException;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.model.user.UserType;
 import com.example.desafio_picpay_simplificado.security.JwtAuthFilter;
@@ -117,5 +118,15 @@ public class UserControllerTests {
 
 
     }
+
+    @Test
+    public void mustReturnNotFoundWhenDeletingInvalidId() throws Exception {
+        Long idInexistente = 99L;
+        Mockito.doThrow(new RecursoNaoEncontradoException("Usuário não encontrado | Id: "+idInexistente)).when(userService).deleteUser(idInexistente);
+
+        mockMvc.perform(delete("/api/user/{id}", idInexistente))
+                .andExpect(status().isNotFound());
+    }
+
 
 }
