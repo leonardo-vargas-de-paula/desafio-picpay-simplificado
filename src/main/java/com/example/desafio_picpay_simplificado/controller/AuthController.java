@@ -2,14 +2,11 @@ package com.example.desafio_picpay_simplificado.controller;
 
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
 import com.example.desafio_picpay_simplificado.dto.UserDTOResponse;
-import com.example.desafio_picpay_simplificado.model.user.User;
-import com.example.desafio_picpay_simplificado.security.JwtUtil;
 import com.example.desafio_picpay_simplificado.service.AuthService;
 import com.example.desafio_picpay_simplificado.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTOResponse> register(@RequestBody UserDTO userDTO) throws Exception{
+    public ResponseEntity<UserDTOResponse> register(@Valid @RequestBody UserDTO userDTO) throws Exception{
         UserDTOResponse userDTOResponse = userService.createUser(userDTO);
         return new ResponseEntity<>(userDTOResponse, HttpStatus.CREATED);
 
