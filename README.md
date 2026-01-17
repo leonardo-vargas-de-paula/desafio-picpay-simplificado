@@ -14,7 +14,16 @@ Este projeto é o estudo de uma possível solução para o desafio backend Picpa
 
 ### 🛠️ Desenvolvimento & Arquitetura
 - [x] Adicionar o Swagger
-- [ ] Testes unitários/integração _(em progresso...)_
+- [ ] Testes unitários do Controller _(em progresso...)_
+  - [ ] UserController
+  - [ ] TransactionController
+  - [ ] AuthController
+- [ ] Testes unitários do Service 
+  - [ ]  AuthService
+  - [ ]  NotificationService
+  - [ ] TransactionService
+  - [ ] UserDetailService
+  - [ ] UserService
 - [x] Criação de uma classe para controle das exceções
 - [ ] Organizar mapper para conversão de DTOs
 - [ ] Ampliar o escopo do projeto

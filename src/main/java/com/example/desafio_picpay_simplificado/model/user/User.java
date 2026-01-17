@@ -2,6 +2,8 @@ package com.example.desafio_picpay_simplificado.model.user;
 
 import com.example.desafio_picpay_simplificado.dto.UserDTO;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,7 +21,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+
     private String firstName;
+
 
     private String lastName;
 
@@ -31,7 +35,8 @@ public class User {
 
     String password;
 
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
+
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
@@ -39,7 +44,7 @@ public class User {
         this.firstName = userDTO.firstName();
         this.lastName=userDTO.lastName();
         this.document = userDTO.document();
-        this.balance = userDTO.balance();
+        this.balance = (userDTO.balance() != null) ? userDTO.balance() : BigDecimal.ZERO;
         this.email = userDTO.email();
         this.password = userDTO.password();
         this.userType = userDTO.userType();

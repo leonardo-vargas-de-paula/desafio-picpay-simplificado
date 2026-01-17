@@ -43,7 +43,7 @@ public class UserService {
     }
 
     public User saveUser(User user){
-        userRepository.saveUser(user);
+        userRepository.save(user);
         return user;
     }
 
