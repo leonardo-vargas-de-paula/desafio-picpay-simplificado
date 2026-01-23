@@ -9,6 +9,9 @@ Este projeto é o estudo de uma possível solução para o desafio backend Picpa
 - Maven
 - MockMvc
 - Docker Compose
+- Swagger
+- Terraform
+- Github Actions
 
 ## 🖥 Infra
 
