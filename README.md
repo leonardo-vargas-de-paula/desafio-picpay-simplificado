@@ -40,7 +40,7 @@ O repositório das soluções de infra está disponível em: [iac-desafio-picpay
 ### 🚀 DevOps & Infraestrutura
 - [ ] Configuração do CI/CD
 - [ ] Deploy na AWS
-- [ ] Provisionamento de infraestrutura com Terraform
+- [x] Provisionamento de infraestrutura com Terraform
 
 
 
