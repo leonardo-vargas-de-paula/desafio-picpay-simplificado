@@ -81,6 +81,19 @@ public class UserServiceTests {
         verify(userRepository, times(1)).delete(user);
     }
 
+    @Test
+    void validateTransactionSuccess() throws Exception {
+        user.setUserType(UserType.COMMON);
+        user.setBalance(new BigDecimal("100.00"));
+        BigDecimal amount = new BigDecimal("50.00");
+
+
+        userService.validateTransaction(user, amount);
+
+    }
+
+
+
 
 
 
