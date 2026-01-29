@@ -70,5 +70,18 @@ public class UserServiceTests {
         verify(passwordEncoder, times(1)).encode(userDTO.password());
     }
 
+    @Test
+    void deleteUserSuccess() {
+        Long userId = 1L;
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        userService.deleteUser(userId);
+
+        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).delete(user);
+    }
+
+
+
 
 }
