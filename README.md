@@ -34,7 +34,7 @@ O repositório das soluções de infra está disponível em: [iac-desafio-picpay
   - [ ] UserDetailService
   - [ ] UserService
 - [x] Criação de uma classe para controle das exceções
-- [ ] Organizar mapper para conversão de DTOs
+- [x] Organizar mapper para conversão de DTOs
 - [ ] Ampliar o escopo do projeto
 
 ### 🔒 Segurança
