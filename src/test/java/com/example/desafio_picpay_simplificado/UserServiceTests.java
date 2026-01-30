@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
@@ -30,10 +31,15 @@ public class UserServiceTests {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private ModelMapper modelMapper;
+
     @InjectMocks
     private UserService userService;
 
     private UserDTO userDTO;
+
+    private UserDTOResponse userDTOResponse;
 
     private User user;
 
@@ -42,6 +48,15 @@ public class UserServiceTests {
         userDTO = new UserDTO(
                 "João", "Silva", "12345678900", new BigDecimal("100.00"),
                 "joao@email.com", "senha123", UserType.COMMON
+        );
+
+        userDTOResponse = new UserDTOResponse(
+                userDTO.firstName(),
+                userDTO.lastName(),
+                userDTO.document(),
+                userDTO.balance(),
+                userDTO.email(),
+                userDTO.userType()
         );
 
         user = new User(userDTO);
@@ -54,8 +69,10 @@ public class UserServiceTests {
         when(userRepository.findUserByDocument(userDTO.document())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(userDTO.password())).thenReturn("encoded_pass");
         when(userRepository.save(any(User.class))).thenReturn(user);
+        when(modelMapper.map(any(), eq(UserDTOResponse.class))).thenReturn(userDTOResponse);
 
         UserDTOResponse response = userService.createUser(userDTO);
+
 
         assertThat(response).isNotNull();
         assertThat(response.firstName()).isEqualTo(userDTO.firstName());

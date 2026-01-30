@@ -12,6 +12,7 @@ import com.example.desafio_picpay_simplificado.security.config.SecurityConfig;
 import com.example.desafio_picpay_simplificado.service.AuthService;
 import com.example.desafio_picpay_simplificado.service.UserDetailService;
 import com.example.desafio_picpay_simplificado.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -50,14 +51,30 @@ public class UserControllerTests {
     @MockitoBean
     private JwtUtil jwtUtil;
 
+    private UserDTO userDTO1;
+
+    private UserDTO userDTO2;
+
+    private UserDTO dados;
+
+    private User user1;
+
+
+
+    @BeforeEach
+    void setUp() {
+        userDTO1 = new UserDTO( "firstName", "lastName", "11111", BigDecimal.valueOf(10.1),"teste1@example.com", "senha1", UserType.COMMON);
+        userDTO2 = new UserDTO("firstName2", "lastName2", "22222", BigDecimal.valueOf(109830.1),"teste2@example.com", "senha2", UserType.MERCHANT);
+        user1 = new User( 1L,"firstName", "lastName", "11111", "teste1@example.com", "senha1", BigDecimal.valueOf(10.1), UserType.COMMON);
+        dados = new UserDTO("firstName2", "lastName2", "11111", BigDecimal.valueOf(109830.1),"teste1@example.com", "senha1", UserType.COMMON);
+    }
+
 
     @Test
     public void mustReturnAllUsers() throws Exception {
         List<UserDTO> usersDTO = new ArrayList<>();
-        UserDTO user1 = new UserDTO( "firstName", "lastName", "11111", BigDecimal.valueOf(10.1),"teste1@example.com", "senha1", UserType.COMMON);
-        UserDTO user2 = new UserDTO("firstName2", "lastName2", "22222", BigDecimal.valueOf(109830.1),"teste2@example.com", "senha2", UserType.MERCHANT);
-        usersDTO.add(user1);
-        usersDTO.add(user2);
+        usersDTO.add(userDTO1);
+        usersDTO.add(userDTO2);
         Mockito.when(userService.getAllUsers()).thenReturn(usersDTO);
 
         mockMvc.perform(get("/api/user")
@@ -74,10 +91,7 @@ public class UserControllerTests {
 
     @Test
     public void mustReturnUserById() throws Exception {
-        User user1 = new User( 1L,"firstName", "lastName", "11111", "teste1@example.com", "senha1", BigDecimal.valueOf(10.1), UserType.COMMON);
-        UserDTO userDTO = UserDTO.fromEntity(user1);
-
-        Mockito.when(userService.getUserById(user1.getId())).thenReturn(userDTO);
+        Mockito.when(userService.getUserById(user1.getId())).thenReturn(userDTO1);
 
         mockMvc.perform(get("/api/user/{id}", 1L)
                 .accept(MediaType.APPLICATION_JSON))
@@ -89,8 +103,6 @@ public class UserControllerTests {
 
     @Test
     public void mustDeleteUserById() throws Exception {
-        User user1 = new User( 1L,"firstName", "lastName", "11111", "teste1@example.com", "senha1", BigDecimal.valueOf(10.1), UserType.COMMON);
-
         Mockito.doNothing().when(userService).deleteUser(1L);
 
         mockMvc.perform(delete("/api/user/{id}", user1.getId()))
@@ -99,9 +111,6 @@ public class UserControllerTests {
 
     @Test
     public void mustUpdateUser() throws Exception {
-        User user1 = new User( 1L,"firstName", "lastName", "11111", "teste1@example.com", "senha1", BigDecimal.valueOf(10.1), UserType.COMMON);
-        UserDTO dados = new UserDTO("firstName2", "lastName2", "11111", BigDecimal.valueOf(109830.1),"teste1@example.com", "senha1", UserType.COMMON);
-
         Mockito.when(userService.updateUser(1L, dados)).thenReturn(dados);
 
         mockMvc.perform(put("/api/user/{id}", 1L)
@@ -144,7 +153,6 @@ public class UserControllerTests {
     @DisplayName("Deve retornar 404 ao tentar atualizar um usuário inexistente")
     public void mustShouldReturnNotFoundWhenUpdatingNonExistentUser() throws Exception{
         Long idInexistente = 99L;
-        UserDTO dados = new UserDTO("firstName2", "lastName2", "11111", BigDecimal.valueOf(109830.1),"teste1@example.com", "senha1", UserType.COMMON);
         Mockito.when(userService.updateUser(idInexistente, dados)).thenThrow(new RecursoNaoEncontradoException("Usuário não encontrado | Id: "+idInexistente));
 
         mockMvc.perform(put("/api/user/{id}", idInexistente)

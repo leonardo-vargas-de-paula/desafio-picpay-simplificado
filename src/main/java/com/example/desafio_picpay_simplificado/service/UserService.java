@@ -6,6 +6,7 @@ import com.example.desafio_picpay_simplificado.exceptions.*;
 import com.example.desafio_picpay_simplificado.model.user.User;
 import com.example.desafio_picpay_simplificado.model.user.UserType;
 import com.example.desafio_picpay_simplificado.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -16,11 +17,14 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private final ModelMapper modelMapper;
+
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(ModelMapper modelMapper, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -58,7 +62,7 @@ public class UserService {
 
         User savedUser = this.saveUser(user);
 
-        return UserDTOResponse.fromEntity(savedUser);
+        return modelMapper.map(savedUser, UserDTOResponse.class);
 
     }
 
@@ -86,7 +90,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return UserDTO.fromEntity(user);
+        return modelMapper.map(user, UserDTO.class);
 
     }
 
@@ -98,7 +102,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
 
-        return UserDTO.fromEntity(user);
+        return modelMapper.map(user, UserDTO.class);
     }
 
 
@@ -110,11 +114,4 @@ public class UserService {
         userRepository.delete(user);
     }
 
-
-    public UserDTO findUserByEmail(String email) {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
-
-        return UserDTO.fromEntity(user);
-    }
 }
