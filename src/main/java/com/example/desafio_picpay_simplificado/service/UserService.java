@@ -90,7 +90,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return UserDTO.fromEntity(user);
+        return modelMapper.map(user, UserDTO.class);
 
     }
 
@@ -102,7 +102,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
 
-        return UserDTO.fromEntity(user);
+        return modelMapper.map(user, UserDTO.class);
     }
 
 
@@ -114,11 +114,4 @@ public class UserService {
         userRepository.delete(user);
     }
 
-
-    public UserDTO findUserByEmail(String email) {
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado."));
-
-        return UserDTO.fromEntity(user);
-    }
 }
